@@ -57,3 +57,4 @@ Drop a folder with a `SKILL.md` into `skills/`, or a `.md` file into `agents/` o
 | [hesreallyhim/awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code) | Curated master list |
 | [SuperClaude-Org/SuperClaude_Framework](https://github.com/SuperClaude-Org/SuperClaude_Framework) | 30 commands, 70% token reduction |
 | [carlrannaberg/claudekit](https://github.com/carlrannaberg/claudekit) | Hooks toolkit |
+| [gsd-build/get-shit-done](https://github.com/gsd-build/get-shit-done) | To explore |
