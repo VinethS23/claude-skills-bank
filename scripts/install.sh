@@ -41,7 +41,7 @@ for agent_file in "$REPO_DIR/agents"/*.md; do
   fi
 done
 
-# ── Commands ─────────────────────────────────────────────────────────────────
+# ── Commands (top-level .md files) ───────────────────────────────────────────
 if [ -n "$(ls -A "$REPO_DIR/commands" 2>/dev/null)" ]; then
   mkdir -p "$CLAUDE_DIR/commands"
   for cmd_file in "$REPO_DIR/commands"/*.md; do
@@ -57,7 +57,41 @@ if [ -n "$(ls -A "$REPO_DIR/commands" 2>/dev/null)" ]; then
       echo "  [linked] commands/$cmd_name"
     fi
   done
+
+  # ── Commands subdirectories (e.g. commands/gsd/) ──────────────────────────
+  for cmd_subdir in "$REPO_DIR/commands"/*/; do
+    [ -d "$cmd_subdir" ] || continue
+    subdir_name="$(basename "$cmd_subdir")"
+    target="$CLAUDE_DIR/commands/$subdir_name"
+    if [ -L "$target" ]; then
+      echo "  [skip]   commands/$subdir_name/ (already linked)"
+    elif [ -e "$target" ]; then
+      echo "  [warn]   commands/$subdir_name/ exists but is NOT a symlink — skipping"
+    else
+      ln -s "$cmd_subdir" "$target"
+      echo "  [linked] commands/$subdir_name/"
+    fi
+  done
 fi
+
+# ── Top-level repo directories (e.g. get-shit-done/) ─────────────────────────
+for repo_dir in "$REPO_DIR"/*/; do
+  dir_name="$(basename "$repo_dir")"
+  # Only sync dirs that are meant to live directly in ~/.claude/
+  case "$dir_name" in
+    get-shit-done)
+      target="$CLAUDE_DIR/$dir_name"
+      if [ -L "$target" ]; then
+        echo "  [skip]   $dir_name/ (already linked)"
+      elif [ -e "$target" ]; then
+        echo "  [warn]   $dir_name/ exists but is NOT a symlink — skipping"
+      else
+        ln -s "$repo_dir" "$target"
+        echo "  [linked] $dir_name/"
+      fi
+      ;;
+  esac
+done
 
 # ── Hooks ─────────────────────────────────────────────────────────────────────
 if [ -n "$(ls -A "$REPO_DIR/hooks" 2>/dev/null)" ]; then
