@@ -159,8 +159,11 @@ Create `plan.md` in the project root. Read `references/plan-template.md` for the
 
 Key principles:
 - This file is Claude's reference during development — be precise about architecture and decisions
-- Feature list should map to implementation tasks, not just user-facing descriptions
+- The Development Phases section is the implementation roadmap — it must match the Notion Plan page exactly. These are not decorative; development follows this order.
+- Phase 1 tasks must be granular enough to implement directly: list every file, every function/method with a one-line description of what it does
+- Later phases can be less granular but must be directional enough to understand what comes next
 - Keep it scannable — this gets read at the start of every session
+- plan.md and the Notion Plan page are the same source of truth — if one changes, the other must be updated
 
 Once plan.md is written, do the initial commit and push everything:
 
@@ -190,9 +193,9 @@ Create four child pages under the project parent. Read `references/notion-templa
 - The Contents toggle must be updated every time Claude writes new sections to the page
 
 **Seed content:**
-- Plan page: populated from the confirmed project brief
+- Plan page: populated from the confirmed project brief, following the template in `notion-templates.md`. The Development Plan section must match plan.md exactly — same phases, same tasks, same function descriptions. This is the user's primary reference for what gets built and in what order.
+- Next Up: seed Current Priority with Phase 1 tasks from the Development Plan (not the feature list — the actual implementation tasks); Backlog with Phase 2+ tasks
 - Dev Log: first entry for today — "Project initialised. Repo created, plan.md written, Notion workspace set up." Include the stack decisions and initial feature list.
-- Next Up: seed Current Priority with the phase 1 must-have features as tasks; Backlog with nice-to-haves
 - Issues: leave empty with structure only
 
 After all pages are created, output the Notion parent page URL so the user can bookmark it.
