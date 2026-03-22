@@ -376,6 +376,21 @@ git push
 
 ---
 
+## Done
+
+Acknowledge completion with a one-line summary of each phase:
+
+**Phase 1:** Pre-flight checks passed — GitHub CLI authenticated, Notion MCP connected.
+**Phase 2:** Codebase audit complete — stack, features, conventions, and uncertainties extracted.
+**Phase 3:** Project walkthrough done — Claude's understanding confirmed and corrected by user.
+**Phase 4:** join-draft.md confirmed — source of truth for all subsequent setup.
+**Phase 5:** Team questions file written — QUESTIONS.md left unstaged for sharing. *(Skipped for solo projects.)*
+**Phase 6:** plan.md written and committed — translated from join-draft.md, team PR raised if applicable.
+**Phase 7:** Notion workspace set up — Plan, Dev Log, Next Up, and Issues pages created or updated.
+**Phase 8:** GSD planning structure initialised — .planning/ files written and validated.
+
+---
+
 ## Behaviour rules
 
 - Narrate before running any irreversible command

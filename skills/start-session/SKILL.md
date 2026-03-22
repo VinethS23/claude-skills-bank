@@ -150,6 +150,15 @@ Ask:
 
 ## Done
 
+Acknowledge completion with a one-line summary of each phase:
+
+**Phase 1:** Pre-flight checks passed — GitHub CLI and Notion MCP confirmed.
+**Phase 2:** Project identified — Notion workspace located.
+**Phase 3:** Project state read — plan.md, Notion pages, GitHub, and GSD state absorbed.
+**Phase 4:** Briefing presented — current state, open issues, Next Up, and GSD progress surfaced.
+**Phase 5:** Recent history offered — Dev Log summary shown if requested.
+**Phase 6:** Session focus confirmed — task selected and ready to work on.
+
 Session is ready. Start working on the confirmed task.
 
 **At session end**, run the `end-session` skill to fill in the Dev Log entry (what was built, decisions, blockers), rewrite Next Up, and update any resolved Issues.

@@ -202,12 +202,79 @@ After all pages are created, output the Notion parent page URL so the user can b
 
 ---
 
+## Phase 6.5: GSD Planning Structure
+
+Tell the user: "Initialising GSD planning structure from plan.md so /gsd:plan-phase and related skills are available."
+
+Create the `.planning/` directory and write these 5 files, translating directly from the confirmed `plan-draft.md` and the `plan.md` just written:
+
+**`.planning/config.json`** — copy the default GSD configuration verbatim from `~/.claude/get-shit-done/templates/config.json`. Do not modify any values.
+
+**`.planning/PROJECT.md`** — use the PROJECT.md template from `~/.claude/get-shit-done/templates/project.md`. Translate from `plan.md`:
+- "What This Is": project name + overview + problem (2-3 sentences)
+- "Core Value": the single most important must-have feature or capability — one sentence
+- "Requirements — Active": all must-have features as checkable items
+- "Requirements — Out of Scope": constraints from plan.md (local-only, no server, etc.)
+- "Context": tech stack summary + architecture note
+- "Constraints": from the Constraints section of plan.md
+- Leave "Key Decisions" table empty — it fills during development
+- Do NOT include development phases here — those go in ROADMAP.md
+
+**`.planning/REQUIREMENTS.md`** — use the REQUIREMENTS.md template from `~/.claude/get-shit-done/templates/requirements.md`. Translate from plan.md Features:
+- v1 Requirements: must-have features as testable `User can [action]` statements with category-based IDs (e.g. FEAT-01, FEAT-02)
+- v2 Requirements: nice-to-have features (no checkboxes)
+- Out of Scope: constraints that rule things out (e.g., "No server/network — local only")
+- Traceability table: map each v1 requirement to its phase number — leave Status as "Pending"
+
+**`.planning/ROADMAP.md`** — use the ROADMAP.md template from `~/.claude/get-shit-done/templates/roadmap.md`. Translate from plan.md Development Phases — one GSD phase per plan.md phase:
+- Phase name and number must match plan.md exactly
+- Each phase needs: Goal, Depends on, Requirements (REQ IDs), Success Criteria (2-5 observable outcomes), Plans: TBD
+- Leave Plans list items as `- [ ] 0N-01: TBD` placeholders — they get filled by `/gsd:plan-phase`
+- Progress table: all phases "Not started"
+
+**`.planning/STATE.md`** — use the STATE.md template from `~/.claude/get-shit-done/templates/state.md`. Initial values:
+- Project Reference: points to PROJECT.md, core value from above, current focus = Phase 1
+- Current Position: Phase 1 of N, Plan 0 of TBD, Status: "Ready to plan", Last activity: today's date — GSD structure initialised from plan.md
+- Performance Metrics: all zeros/empty
+- Accumulated Context: all sections empty ("None yet.")
+- Session Continuity: Last session = today, Resume file = None
+
+After writing all 5 files, validate the structure:
+
+```bash
+cd <repo-name>
+node ~/.claude/get-shit-done/bin/gsd-tools.cjs state
+```
+
+If this returns valid JSON without errors, the structure is correct. If it errors, surface the error message clearly and attempt to fix the malformed file before proceeding. Do not skip validation.
+
+Once validated, commit the planning files:
+
+```bash
+git add .planning/
+git commit -m "docs: initialise GSD planning structure"
+git push
+```
+
+---
+
 ## Done
 
-Tell the user:
+Acknowledge completion with a one-line summary of each phase:
+
+**Phase 1:** Pre-flight checks passed — GitHub CLI authenticated, Notion MCP connected.
+**Phase 2:** Discovery complete — project scope, stack, and features confirmed through conversation.
+**Phase 3:** Brief confirmed — plan-draft.md reviewed and approved as source of truth.
+**Phase 4:** GitHub repo created — scaffold committed, remote set up.
+**Phase 5:** plan.md written and pushed — architecture, features, and phases documented.
+**Phase 6:** Notion workspace created — Plan, Dev Log, Next Up, and Issues pages seeded.
+**Phase 6.5:** GSD planning structure initialised — .planning/ files written and validated.
+
+Then tell the user:
 - Repo URL
-- Notion workspace URL  
+- Notion workspace URL
 - What's in plan.md
 - What's seeded in Next Up (so they know what Claude thinks the first tasks are)
+- That the GSD planning structure is ready — next step is `/gsd:discuss-phase 1` or `/gsd:plan-phase 1` when ready to start building
 
 Ask if they want to start building immediately or adjust anything first.

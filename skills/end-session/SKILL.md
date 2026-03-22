@@ -252,6 +252,16 @@ Confirm when done:
 
 ## Done
 
+Acknowledge completion with a one-line summary of each phase:
+
+**Phase 1:** Pre-flight checks passed — GitHub CLI and Notion MCP confirmed.
+**Phase 2:** Project identified — Notion workspace located.
+**Phase 3:** Session commits read — changed files, GSD summaries, and UAT results absorbed.
+**Phase 4:** Code review complete — issues and suggested tasks surfaced and approved.
+**Phase 5:** Current Notion state read — Dev Log, Next Up, and Issues fetched fresh.
+**Phase 6:** Notion updates drafted and approved — Dev Log entry, Next Up rewrite, and Issues changes confirmed.
+**Phase 7:** Notion written — Dev Log, Next Up, and Issues updated.
+
 Session closed. Remind the user to push if there are unpushed commits:
 
 ```bash
