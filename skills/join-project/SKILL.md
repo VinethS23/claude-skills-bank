@@ -219,8 +219,23 @@ Tell user: "`QUESTIONS.md` is at the repo root — share with the team and fill 
 ## Constraints
 
 ## Development Phases
-### Phase 1 — Name
-- [ ] task
+
+### Phase 1 — [Name] ← most detailed
+- [ ] **[file or component]** — one line on what this file is responsible for overall
+  - `functionName()` — plain English: what does calling this function do? Focus on behaviour, not implementation
+  - `functionName()` — what does calling this do?
+- [ ] **[file or component]** — what it is responsible for
+  - `functionName()` — what does calling this do?
+- [ ] Verification: [how you'll know this phase is done — e.g. "running X command produces Y output"]
+
+### Phase 2 — [Name] ← specific but less granular than Phase 1
+- [ ] [Task — specific enough to act on]
+- [ ] [Task]
+- [ ] Verification: [observable outcome]
+
+### Phase 3+ — [Name] ← directional, detail to be added
+Direction: [One paragraph on what this phase covers and why it comes after Phase 2]
+Likely includes: [bullet list of probable tasks — acknowledged as subject to change]
 
 ## Open Questions
 ```
@@ -262,43 +277,15 @@ Do **not** push plan.md changes directly to main on a team project under any cir
 
 All pages have a **Contents toggle at the top** with anchor links to each section. Update the Contents toggle every time a page is written (read page → write → read again to confirm block IDs are correct). Never write blind.
 
-**Plan** (lightweight, human-readable — not a mirror of plan.md):
-```
-## Overview       — problem, solution, target user (one paragraph)
-## Tech Stack     — list with one-line rationale each
-## Features
-  ### Must-Have   — name + one line
-  ### Nice-to-Have
-## Fragile Areas  — include if any were identified at onboarding
-## Deployment
-## Constraints
-```
+Read `references/notion-templates.md` for the exact content structure of each page. Summary:
 
-**Dev Log** (append-only, newest at top):
-```
-## [YYYY-MM-DD] — [Feature or Session Name]
-**What was built:** ...
-**Decisions made:** ... (omit if none)
-**Blockers:** ... (omit if none)
-```
+**Plan** — human-readable project overview and development roadmap. Sections: Overview, Tech Stack, Features (Must-Have/Nice-to-Have), Development Plan (phased, with Phase 1 at full file/function granularity), Fragile Areas (if any), Deployment, Constraints.
 
-**Next Up** (fully rewritten each session):
-```
-## Current Priority
-- [actionable task]
-## Backlog
-- [task]
-## Blocked / Pending
-- [area] — waiting on: [what]     ← include if open team questions exist
-```
+**Dev Log** — append-only, newest at top. All fields use bullet points. Onboarding snapshot entry uses join-project-specific field names (State at onboarding / In progress / Context inherited) — see templates for format.
 
-**Issues** (updated in place):
-```
-## [YYYY-MM-DD] — [Issue Title] — OPEN|RESOLVED
-**Description:** ...
-**Impact:** ...
-**Resolution:** Pending / [what fixed it]
-```
+**Next Up** — fully rewritten each session. Current Priority mirrors active phase tasks from plan.md at full granularity (file/function descriptions). Backlog summarises future phases as one-liners. Blocked/Pending section only if open team questions exist.
+
+**Issues** — updated in place. All fields use bullet points (Description / Impact / Resolution).
 
 ### If Notion workspace exists (user provided link):
 1. Fetch the page — check which child pages exist (Plan, Dev Log, Next Up, Issues)
@@ -314,18 +301,10 @@ All pages have a **Contents toggle at the top** with anchor links to each sectio
 
 ### Seeding rules
 
-- **Plan** — from join-draft.md Overview, Tech Stack, What's Built + What's Next as features. Include Fragile Areas section if any.
-- **Dev Log** — seed with onboarding snapshot (format below). This is not a fresh start.
-- **Next Up** — Current Priority = "In Progress" items; Backlog = "What's Next"; Blocked = areas with open team questions
-- **Issues** — from "Known Issues & Tech Debt" in join-draft.md; empty if none
-
-**Onboarding Dev Log entry:**
-```
-## [YYYY-MM-DD] — Project Onboarding Snapshot
-**State at onboarding:** [1-2 sentences — what was built, where the project stood]
-**In progress:** [what was actively being worked on]
-**Decisions/context inherited:** [key constraints or decisions already made]
-```
+- **Plan** — from join-draft.md: Overview, Tech Stack, What's Built + What's Next as features. Development Plan section from plan.md phases (translate directly — same phase names, same tasks, same function descriptions). Include Fragile Areas section if any were identified.
+- **Dev Log** — seed with onboarding snapshot entry (see `references/notion-templates.md` for format). This is not a fresh start — it's a point-in-time snapshot of what existed when joining.
+- **Next Up** — Current Priority mirrors the active phase tasks from plan.md at full granularity (files + function descriptions, same level of detail as the Development Plan). Backlog summarises future phases as one-liners (`**Phase N — [name]:** [one-line summary]`). Add Blocked/Pending section only if there are open team questions.
+- **Issues** — from "Known Issues & Tech Debt" in join-draft.md; leave empty with structure only if none.
 
 ---
 
