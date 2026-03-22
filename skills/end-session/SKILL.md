@@ -32,8 +32,11 @@ Same as `start-session`: use the current directory name to find the Notion proje
 
 ```bash
 git log --oneline --since="12 hours ago"
-git diff --stat HEAD~$(git log --oneline --since="12 hours ago" | wc -l | tr -d ' ') HEAD
+OLDEST=$(git log --oneline --since="12 hours ago" | tail -1 | awk '{print $1}')
+git diff --stat ${OLDEST}^..HEAD
 ```
+
+Show this commit list to the user and ask: "These are the commits from the last 12 hours — does this look right, or do you want to adjust the window?" Wait for confirmation before proceeding.
 
 **Check commit quality.** Scan each commit message. If any are uninformative — single words, "wip", "fix", "update", "temp", "asdf", or similar — check whether they've been pushed:
 
@@ -64,7 +67,7 @@ Wait for the user to confirm commits are fixed, then re-read.
 
 Once commits are clean, also read:
 ```bash
-git diff --name-only HEAD~$(git log --oneline --since="12 hours ago" | wc -l | tr -d ' ') HEAD
+git diff --name-only ${OLDEST}^..HEAD
 ```
 
 This gives the list of changed files for the code review.
@@ -72,9 +75,9 @@ This gives the list of changed files for the code review.
 **GSD Phase Summaries (conditional):**
 Check if `.planning/phases/` exists:
 ```bash
-find .planning/phases/ -name "*-SUMMARY.md" -newer $(git log --oneline --since="12 hours ago" -1 --format="%H" 2>/dev/null && echo HEAD || echo /dev/null) 2>/dev/null
+find .planning/phases/ -name "*-SUMMARY.md" -mmin -720 2>/dev/null
 ```
-Simpler: list all `*-SUMMARY.md` files in `.planning/phases/` and their modification times, then read any modified in the last 12 hours. These contain structured build notes from GSD executor agents — they are richer than commit messages. Use them alongside commit messages when drafting the Dev Log entry in Phase 6.
+Read any files returned — these contain structured build notes from GSD executor agents. These contain structured build notes from GSD executor agents — they are richer than commit messages. Use them alongside commit messages when drafting the Dev Log entry in Phase 6.
 
 **GSD UAT Results (conditional):**
 Check `.planning/phases/` for any `*-UAT.md` files modified in the last 12 hours:
@@ -91,9 +94,10 @@ Two-tier review: deep on what changed, architectural scan on the rest.
 
 ### Tier 1 — Deep review (changed files + direct dependents)
 
-1. Read each changed file in full
-2. Identify direct dependents (files that import or call into changed files) — read those too
-3. Review for:
+1. Read `plan.md` for architecture context — understand intended structure before judging the changes
+2. Read each changed file in full
+3. Identify direct dependents (files that import or call into changed files) — read those too
+4. Review for:
    - Bugs or logic errors introduced
    - Unhandled edge cases or error paths
    - Security concerns (injection, auth gaps, exposed secrets)
@@ -159,9 +163,17 @@ Built from commit messages, code review findings, and any GSD SUMMARY.md files r
 
 ```
 ## [YYYY-MM-DD] — [Session Name derived from commits]
-**What was built:** [1–3 sentences. Specific — reference features, files, or behaviours changed.]
-**Decisions made:** [Any notable mid-session decisions and rationale. Omit if none.]
-**Blockers:** [Anything deferred or stuck. Omit if none.]
+**What was built:**
+- [Specific thing built or changed]
+- [Specific thing built or changed]
+
+**Decisions made:**
+- [Decision and rationale]
+(Omit section if none)
+
+**Blockers:**
+- [What got stuck or deferred]
+(Omit section if none)
 ```
 
 ---
@@ -169,7 +181,7 @@ Built from commit messages, code review findings, and any GSD SUMMARY.md files r
 ### Next Up rewrite
 
 Apply these rules to the current Next Up state:
-- Remove tasks completed this session (infer from commits + review)
+- Remove tasks completed this session — only mark a task complete if a commit message or diff directly and clearly closes it. Do not infer completion from vague or partial commit messages.
 - Promote backlog items to Current Priority if they're unblocked and relevant
 - Add new tasks from the code review's "Suggested next tasks" and any TODOs found
 - Keep it short — Current Priority should be immediately actionable
@@ -244,6 +256,8 @@ Write in this order:
 
 After each write, read the page back to confirm block IDs before updating the Contents toggle. Never update the toggle blind.
 
+If a write fails mid-sequence, stop immediately and tell the user which pages were successfully updated and which were not — do not attempt to continue writing to remaining pages until the failure is understood.
+
 Confirm when done:
 
 > "Notion updated. Dev Log, Next Up, and Issues are current."
@@ -265,6 +279,6 @@ Acknowledge completion with a one-line summary of each phase:
 Session closed. Remind the user to push if there are unpushed commits:
 
 ```bash
-git status
+git log --not --remotes --oneline
 git push
 ```

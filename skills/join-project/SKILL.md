@@ -44,7 +44,7 @@ Read silently — no user interaction. Take the time needed; depth here reduces 
 6. Key source files — entry points, core modules, data models, API routes (enough to understand the shape of the system)
 7. `git log --oneline -20` — recent activity, who's working on what, what changed last
 8. `git branch -r` — open branches, in-flight work not yet merged
-9. `grep -r "TODO\|FIXME\|HACK" --include="*.ts" --include="*.js" --include="*.py" -n` — adjust extensions to match stack
+9. `grep -r "TODO\|FIXME\|HACK" -n` with `--include` flags matching the extensions identified in step 3 (e.g. `--include="*.ts" --include="*.js"` for a Node project, `--include="*.py"` for Python, `--include="*.go"` for Go, `--include="*.rs"` for Rust, `--include="*.rb"` for Ruby, `--include="*.swift"` for Swift)
 10. `.env.example` or config files — environment dependencies
 
 **Extract and flag:**
@@ -242,7 +242,7 @@ Likely includes: [bullet list of probable tasks — acknowledged as subject to c
 
 **If `plan.md` exists:**
 - Compare with join-draft.md
-- If roughly accurate: leave it untouched, note any gaps to the user
+- If roughly accurate (stack, architecture pattern, active phase, and feature list are correct): leave it untouched, note any gaps to the user
 - If materially out of date (missing features, wrong stack, stale phases): do **not** edit directly — follow the team PR flow below, narrating what would change and why
 
 **If `plan.md` does not exist:**
@@ -369,6 +369,7 @@ git push
 
 **Team project — commit to the same branch as plan.md** (the `docs/onboarding-plan` branch, not main):
 ```bash
+git checkout docs/onboarding-plan
 git add .planning/
 git commit -m "docs: initialise GSD planning structure via join-project onboarding"
 git push

@@ -33,7 +33,9 @@ If `gh` is not authenticated, warn the user but continue — GitHub checks are b
 
 **If no project was named**, use the current directory name (from `basename "$PWD"`) as the search term.
 
-Search Notion for a project page matching that name under the "Projects" parent. If exactly one match is found, proceed silently. If multiple matches are found, list them and ask the user to confirm which one. If no match is found, tell the user and ask them to confirm the project name or paste the Notion URL directly.
+First check `plan.md` for a `## Notion Workspace` section — if a URL is stored there, use it directly and skip the search entirely.
+
+Otherwise, search Notion for a project page matching that name. Search under the "Projects" parent first — if no match is found there, fall back to a workspace-wide search. If exactly one match is found, proceed silently. If multiple matches are found, list them and ask the user to confirm which one. If no match is found at all, tell the user and ask them to confirm the project name or paste the Notion URL directly.
 
 ---
 
@@ -45,7 +47,7 @@ Run all of the following in parallel where possible.
 ```bash
 cat plan.md
 ```
-If `plan.md` doesn't exist in the current directory, note it as missing — don't stop.
+If `plan.md` doesn't exist in the current directory, note it as missing — don't stop. If `plan.md` is missing AND `.planning/STATE.md` is also absent, derive current state from the Notion Plan page instead — read it for project overview, tech stack, and Development Plan to populate the "Current state" field in the briefing.
 
 **Notion** (via MCP):
 - Read the **Plan** page — for high-level context only
@@ -88,6 +90,10 @@ Output a compact briefing in this format:
 - Current phase: [phase number and name]
 - Status: [Not started / Ready to plan / Planning / In progress / Phase complete]
 - Next action: [what STATE.md says is next — e.g. "Run /gsd:plan-phase 2" or "Continue executing Phase 1"]
+- Active tasks:
+  - [file or component] — [what it does]
+  - [file or component] — [what it does]
+  (Populate from ROADMAP.md active phase tasks — same granularity as the Development Plan. Omit if phase is Not started.)
 
 ⚠️ **Mid-session handoff detected** — [Only include if .continue-here*.md was found]
 Work was paused mid-phase. Run /gsd:resume-work before starting new work.

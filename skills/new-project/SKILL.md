@@ -21,7 +21,7 @@ gh auth status
 
 If `gh` is not installed or not authenticated, tell the user and stop. Direct them to install GitHub CLI and run `gh auth login`.
 
-Also check the Notion MCP is connected — you'll need it in Phase 4.
+Also check the Notion MCP is connected — you'll need it in Phase 6. If it is unavailable, tell the user and stop — Notion is required for this skill.
 
 ---
 
@@ -141,6 +141,8 @@ cd <repo-name>
 git init
 ```
 
+Set `REPO_DIR="$(pwd)"` immediately after the `cd` and use this absolute path in all subsequent bash calls — this prevents path drift if shell state resets between tool calls.
+
 Generate appropriate scaffold files for the confirmed stack — standard project structure, `.gitignore`, `README.md`, config files, entry points. Use your judgement based on the stack; don't over-scaffold. Do not commit yet.
 
 Create the remote:
@@ -190,7 +192,7 @@ Create four child pages under the project parent. Read `references/notion-templa
 **For each page:**
 - Create the page with its standard structure
 - Add a **Contents toggle block at the top** listing anchor links to each major section
-- The Contents toggle must be updated every time Claude writes new sections to the page
+- After creating each page, read it back to get block IDs before updating the Contents toggle. Never update the toggle blind.
 
 **Seed content:**
 - Plan page: populated from the confirmed project brief, following the template in `notion-templates.md`. The Development Plan section must match plan.md exactly — same phases, same tasks, same function descriptions. This is the user's primary reference for what gets built and in what order.
@@ -198,7 +200,14 @@ Create four child pages under the project parent. Read `references/notion-templa
 - Dev Log: first entry for today — "Project initialised. Repo created, plan.md written, Notion workspace set up." Include the stack decisions and initial feature list.
 - Issues: leave empty with structure only
 
-After all pages are created, output the Notion parent page URL so the user can bookmark it.
+After all pages are created, output the Notion parent page URL so the user can bookmark it. Also append it to `plan.md` as a new section at the end:
+
+```markdown
+## Notion Workspace
+[URL of the Notion project parent page]
+```
+
+This allows `start-session` and `end-session` to find the workspace directly from `plan.md` without searching by name.
 
 ---
 
@@ -239,14 +248,23 @@ Create the `.planning/` directory and write these 5 files, translating directly 
 - Accumulated Context: all sections empty ("None yet.")
 - Session Continuity: Last session = today, Resume file = None
 
+Before writing any files, check that the GSD templates exist:
+
+```bash
+ls ~/.claude/get-shit-done/templates/config.json
+```
+
+If this path does not exist, tell the user: "GSD templates not found at ~/.claude/get-shit-done/templates/ — the GSD planning structure cannot be initialised. You may need to install or update get-shit-done." Stop Phase 6.5 and skip to Done.
+
 After writing all 5 files, validate the structure:
 
 ```bash
-cd <repo-name>
 node ~/.claude/get-shit-done/bin/gsd-tools.cjs state
 ```
 
-If this returns valid JSON without errors, the structure is correct. If it errors, surface the error message clearly and attempt to fix the malformed file before proceeding. Do not skip validation.
+Run this from `$REPO_DIR` (the absolute repo path set in Phase 4). If this returns valid JSON without errors, the structure is correct.
+
+If it errors, surface the error message clearly and attempt to fix the malformed file before proceeding. Do not skip validation.
 
 Once validated, commit the planning files:
 
