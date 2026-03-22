@@ -69,6 +69,20 @@ git diff --name-only HEAD~$(git log --oneline --since="12 hours ago" | wc -l | t
 
 This gives the list of changed files for the code review.
 
+**GSD Phase Summaries (conditional):**
+Check if `.planning/phases/` exists:
+```bash
+find .planning/phases/ -name "*-SUMMARY.md" -newer $(git log --oneline --since="12 hours ago" -1 --format="%H" 2>/dev/null && echo HEAD || echo /dev/null) 2>/dev/null
+```
+Simpler: list all `*-SUMMARY.md` files in `.planning/phases/` and their modification times, then read any modified in the last 12 hours. These contain structured build notes from GSD executor agents — they are richer than commit messages. Use them alongside commit messages when drafting the Dev Log entry in Phase 6.
+
+**GSD UAT Results (conditional):**
+Check `.planning/phases/` for any `*-UAT.md` files modified in the last 12 hours:
+```bash
+find .planning/phases/ -name "*-UAT.md" -mmin -720 2>/dev/null
+```
+If any are found: read each one. Look for test entries with a result of "issue", "fail", or similar failure marker. For each issue found, extract: test name, expected behaviour, what the user observed/reported, and inferred severity. These will be added to the Notion Issues draft in Phase 6.
+
 ---
 
 ## Phase 4: Code review
@@ -141,7 +155,7 @@ Draft everything and present for approval before writing a single thing.
 
 ### Dev Log entry
 
-Built from commit messages + code review findings. Format:
+Built from commit messages, code review findings, and any GSD SUMMARY.md files read in Phase 3. If SUMMARY.md files were found, prefer their structured content for the "What was built" field — they contain more detail than commit messages alone. Supplement with commit details where SUMMARY.md doesn't cover something. Format:
 
 ```
 ## [YYYY-MM-DD] — [Session Name derived from commits]
@@ -166,15 +180,27 @@ Present the proposed rewrite in full.
 
 ### Issues updates
 
-Two types of change:
+Two sources of new issues:
 
-**New issues** — from High and Medium severity findings in the code review. Format:
+**1. Code review findings** — High and Medium severity findings from Phase 4. Format:
 ```
 ## [YYYY-MM-DD] — [Issue Title] — OPEN
 **Description:** [What the issue is.]
 **Impact:** [What it breaks or blocks.]
 **Resolution:** Pending
 ```
+
+**2. UAT issues** — issues found in `*-UAT.md` files read in Phase 3. For each failure/issue entry found, add a Notion issue using the same format:
+```
+## [YYYY-MM-DD] — [Test name from UAT] — OPEN
+**Description:**
+- [Expected behaviour per UAT test]
+- User observed: [verbatim or paraphrased from UAT result]
+**Impact:**
+- [Severity: blocker / major / minor / cosmetic — infer from UAT context]
+**Resolution:** Pending
+```
+Do not duplicate issues already captured by the code review. Skip this section if no UAT files were found or no issues were recorded.
 
 **Resolved issues** — infer from commits whether any existing OPEN issues were addressed. If a commit message references or clearly resolves an open issue, mark it RESOLVED:
 ```

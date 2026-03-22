@@ -308,6 +308,74 @@ Read `references/notion-templates.md` for the exact content structure of each pa
 
 ---
 
+## Phase 8 — GSD Planning Structure
+
+Tell the user: "Initialising GSD planning structure from plan.md so /gsd:plan-phase and related skills are available."
+
+**Source file:** Use the `plan.md` that is now in the repo — either the one that already existed (Phase 6 confirmed accurate) or the one just created in Phase 6.
+
+Check whether `.planning/` already exists in the repo:
+- If `.planning/` already exists with valid content: skip this phase, tell the user GSD structure already present
+- If not: create it now
+
+Create the `.planning/` directory and write these 5 files:
+
+**`.planning/config.json`** — copy the default GSD configuration verbatim from `~/.claude/get-shit-done/templates/config.json`. Do not modify any values.
+
+**`.planning/PROJECT.md`** — use the PROJECT.md template from `~/.claude/get-shit-done/templates/project.md`. Translate from `plan.md`:
+- "What This Is": project name + overview + problem (2-3 sentences)
+- "Core Value": the single most critical capability — one sentence
+- "Requirements — Validated": features confirmed working at onboarding (from join-draft.md "What's Built") — format: `- ✓ [feature]`
+- "Requirements — Active": features not yet built (from join-draft.md "What's Next" and plan.md future phases)
+- "Requirements — Out of Scope": constraints from join-draft.md Constraints section
+- "Context": tech stack + Fragile Areas as context (from join-draft.md)
+- "Constraints": from join-draft.md Constraints & Context
+- Leave "Key Decisions" table empty
+
+**`.planning/REQUIREMENTS.md`** — use the REQUIREMENTS.md template from `~/.claude/get-shit-done/templates/requirements.md`. Translate:
+- v1 Requirements: must-have features not yet built, as testable `User can [action]` statements with category IDs
+- Already-built features listed as pre-validated (marked with ✓ in a "Already Shipped" section)
+- v2 Requirements: nice-to-have features
+- Out of Scope: constraints from join-draft.md
+- Traceability table: map each v1 requirement to its plan.md phase number
+
+**`.planning/ROADMAP.md`** — use the ROADMAP.md template from `~/.claude/get-shit-done/templates/roadmap.md`. Translate from plan.md Development Phases:
+- Completed phases (where all tasks are checked off in plan.md): mark as `[x]` in the Phases list and "Complete" in the Progress table
+- In-progress phases: mark as `[ ]` but note status in Progress table as "In progress"
+- Future phases: mark as `[ ]` with "Not started"
+- For each phase: Goal, Depends on, Requirements (REQ IDs), Success Criteria, Plans: TBD (unless plan.md has specific tasks — then list them)
+- The current active phase (as identified in join-draft.md "In Progress") should be the starting point for `/gsd:plan-phase`
+
+**`.planning/STATE.md`** — use the STATE.md template from `~/.claude/get-shit-done/templates/state.md`. Initial values:
+- Project Reference: points to PROJECT.md, core value from above, current focus = the active phase from join-draft.md
+- Current Position: the active or next phase number, Status: "Ready to plan", Last activity: today's date — GSD structure initialised at join-project onboarding
+- Accumulated Context — Blockers: any items from join-draft.md "Open Questions — For Team" (if team project)
+- Session Continuity: Last session = today, Resume file = None
+
+After writing all 5 files, validate the structure:
+
+```bash
+node ~/.claude/get-shit-done/bin/gsd-tools.cjs state
+```
+
+If this returns valid JSON without errors, the structure is correct. If it errors, surface the error and fix the malformed file before proceeding.
+
+**Solo project — commit directly:**
+```bash
+git add .planning/
+git commit -m "docs: initialise GSD planning structure via join-project onboarding"
+git push
+```
+
+**Team project — commit to the same branch as plan.md** (the `docs/onboarding-plan` branch, not main):
+```bash
+git add .planning/
+git commit -m "docs: initialise GSD planning structure via join-project onboarding"
+git push
+```
+
+---
+
 ## Behaviour rules
 
 - Narrate before running any irreversible command

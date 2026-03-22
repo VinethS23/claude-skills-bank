@@ -59,6 +59,18 @@ git log --oneline -10
 gh run list --limit 5
 ```
 
+**GSD Planning State (conditional):**
+Check if `.planning/STATE.md` exists:
+- If yes: read `.planning/STATE.md` and `.planning/ROADMAP.md` in full.
+  Extract: current phase number and name, current status, last activity date, any blockers in Accumulated Context.
+- If no: note GSD structure not present — no action needed.
+
+Also check for a pause handoff file:
+```bash
+ls .continue-here*.md 2>/dev/null
+```
+If any `.continue-here*.md` file exists at the repo root: read it in full. This is a mid-phase handoff file created by `/gsd:pause-work` and must be treated as high priority context.
+
 Absorb everything. Do not output raw data — synthesise into the briefing below.
 
 ---
@@ -71,6 +83,15 @@ Output a compact briefing in this format:
 ## Session Briefing — [Project Name] — [DATE]
 
 **Current state:** [One or two sentences — what this project is and where it's at]
+
+**GSD Phase Progress:** [Only include this section if .planning/STATE.md was found]
+- Current phase: [phase number and name]
+- Status: [Not started / Ready to plan / Planning / In progress / Phase complete]
+- Next action: [what STATE.md says is next — e.g. "Run /gsd:plan-phase 2" or "Continue executing Phase 1"]
+
+⚠️ **Mid-session handoff detected** — [Only include if .continue-here*.md was found]
+Work was paused mid-phase. Run /gsd:resume-work before starting new work.
+Summary: [one-line from the .continue-here file's current_state or summary section]
 
 **Open issues ([N]):**
 - [YYYY-MM-DD] — [Issue title]
@@ -90,7 +111,7 @@ Backlog:
 - CI: [last run status, or "no recent runs"]
 ```
 
-Keep it scannable. Don't pad with commentary.
+Omit the **GSD Phase Progress** section entirely if `.planning/` was not found — no noise for non-GSD projects. Omit the handoff warning if no `.continue-here*.md` file exists. Keep it scannable. Don't pad with commentary.
 
 ---
 
